@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { createUsername } from "../_actions/create-username";
 import { useState } from "react";
+import Link from "next/link";
+import { Link2Icon } from "lucide-react";
 
 type CreateUsernameResponse = {
   success: boolean;
@@ -10,7 +12,11 @@ type CreateUsernameResponse = {
   username?: string;
 };
 
-export function UrlPreview() {
+interface UrlPreviewProps {
+  username?: string;
+}
+
+export function UrlPreview({ username }: UrlPreviewProps) {
   const [resultAction, setResultAction] = useState<CreateUsernameResponse>({
     success: false,
     error: "",
@@ -35,6 +41,31 @@ export function UrlPreview() {
     });
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_HOST_URL;
+
+  if (username || resultAction.username) {
+    return (
+      <div className="flex justify-center p-2 text-gray-100 flex-1 flex-col gap-2">
+        <div className="w-full items-center flex justify-center flex-1">
+          <Link
+            href={`${baseUrl}/creator/${username ?? resultAction.username}`}
+            target="_blank"
+            className="w-fit h-9 rounded-md flex items-center font-semibold text-white"
+          >
+            {baseUrl}/creator/{username ?? resultAction.username}
+          </Link>
+
+          <Link
+            href={`${baseUrl}/creator/${username ?? resultAction.username}`}
+            target="_blank"
+          >
+            <Link2Icon className="ml-2 text-gray-400 hover:text-gray-300 transition-colors" />
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex justify-center p-2 text-gray-100 flex-1 flex-col gap-2">
       <form
@@ -45,7 +76,6 @@ export function UrlPreview() {
           <p className="w-fit h-9 rounded-md flex items-center font-semibold text-white">
             {process.env.NEXT_PUBLIC_HOST_URL}/creator/
           </p>
-          {/* TODO: Mudar isso aqui para ficar de forma dinâmica */}
           <input
             type="text"
             className="flex-1 outline-none h-9 border border-gray-50 rounded-md px-1 w-full"
