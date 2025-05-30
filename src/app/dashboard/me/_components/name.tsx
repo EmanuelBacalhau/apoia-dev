@@ -3,6 +3,7 @@
 import { ChangeEvent, useState, useRef } from "react";
 import { debounce } from "lodash";
 import { changeName } from "../_actions/change-name";
+import { toast } from "sonner";
 
 interface NameProps {
   initialName?: string;
@@ -27,14 +28,16 @@ export function Name({ initialName }: NameProps) {
             setName(response.name);
           } else {
             setName(originalName);
-            console.error(response.error);
+            toast.error("Erro ao alterar o nome.");
           }
+
+          toast.success("Nome alterado com sucesso!");
         } catch (error) {
-          console.log(error);
+          toast.error("Erro ao alterar o nome.");
           setName(originalName);
         }
       }
-    }, 1000)
+    }, 500)
   ).current;
 
   function handleChangeName(e: ChangeEvent<HTMLInputElement>) {

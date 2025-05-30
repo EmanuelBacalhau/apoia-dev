@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Name } from "./name";
+import { Bio } from "./bio";
 
 interface CardProfileProps {
   user: {
@@ -27,6 +28,7 @@ export function CardProfile({ user }: CardProfileProps) {
       )}
       <div className="flex flex-col">
         <Name initialName={user.name} />
+        <Bio initialBio={user.bio ?? "Digite sua biografia..."} />
       </div>
     </div>
   );
