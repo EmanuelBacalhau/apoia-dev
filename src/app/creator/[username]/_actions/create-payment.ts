@@ -1,5 +1,6 @@
 "use server";
 
+import { prisma } from "@/lib/prisma";
 import { create } from "lodash";
 import { z } from "zod";
 
@@ -34,6 +35,9 @@ export async function createPayment(data: CreatePaymentSchema) {
   }
 
   try {
+    const creator = await prisma.user.findUnique({
+      where: { id: schema.data.creatorId },
+    });
     return {
       success: true,
       error: null,

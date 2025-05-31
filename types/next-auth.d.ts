@@ -12,5 +12,6 @@ declare module "next-auth" {
     image?: string;
     username?: string;
     bio?: string;
+    connectedStripeAccountId?: string;
   }
 }
