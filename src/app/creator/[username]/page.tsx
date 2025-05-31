@@ -54,7 +54,10 @@ export default async function Apoia({
 
         <section className="bg-gray-50 rounded-md p-5 h-fit mx-2">
           <h3 className="font-semibold text-lg">Apoie o {user.name}:</h3>
-          <FormDonate slug={user.username!} creatorId={user.id} />
+          <FormDonate
+            slug={user.username!}
+            creatorId={user.connectedStripeAccountId!}
+          />
         </section>
       </div>
     </div>

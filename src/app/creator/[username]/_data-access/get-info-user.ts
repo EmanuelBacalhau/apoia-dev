@@ -32,6 +32,7 @@ export async function getInfoUser(data: CreateUserNameSchema) {
         username: true,
         bio: true,
         image: true,
+        connectedStripeAccountId: true,
       },
     });
 
@@ -51,6 +52,7 @@ export async function getInfoUser(data: CreateUserNameSchema) {
         bio: response.bio,
         image: response.image,
         name: response.name,
+        connectedStripeAccountId: response.connectedStripeAccountId,
       },
     };
   } catch (error) {

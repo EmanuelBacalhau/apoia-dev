@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,6 +17,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { createPayment } from "../_actions/create-payment";
+import { toast } from "sonner";
+import { getStripeJs } from "@/lib/stripe-js";
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -58,7 +59,18 @@ export function FormDonate({ slug, creatorId }: FormDonateProps) {
       creatorId: creatorId,
     });
 
-    console.log(checkout);
+    if (!checkout.success) {
+      toast.error(checkout.error);
+      return;
+    }
+
+    const dataJson = JSON.parse(checkout.session!);
+
+    const stripe = await getStripeJs();
+
+    await stripe?.redirectToCheckout({
+      sessionId: dataJson.id,
+    });
   }
 
   return (
@@ -125,8 +137,12 @@ export function FormDonate({ slug, creatorId }: FormDonateProps) {
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Fazer doação
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={form.formState.isSubmitting}
+        >
+          {form.formState.isSubmitting ? "Processando..." : "Doar"}
         </Button>
       </form>
     </Form>
