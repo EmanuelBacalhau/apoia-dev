@@ -61,8 +61,6 @@ export async function createPayment(data: CreatePaymentSchema) {
       },
     });
 
-    console.log(data);
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
