@@ -59,17 +59,28 @@ export function FormDonate({ slug, creatorId }: FormDonateProps) {
       creatorId: creatorId,
     });
 
+    await handlePaymentResponse(checkout);
+  }
+
+  async function handlePaymentResponse(checkout: {
+    success: boolean;
+    sessionId?: string;
+    error: string | null;
+  }) {
     if (!checkout.success) {
       toast.error(checkout.error);
       return;
     }
 
-    const dataJson = JSON.parse(checkout.session!);
+    if (!checkout.sessionId) {
+      toast.error("Sessão de pagamento não encontrada.");
+      return;
+    }
 
     const stripe = await getStripeJs();
 
     await stripe?.redirectToCheckout({
-      sessionId: dataJson.id,
+      sessionId: checkout.sessionId,
     });
   }
 

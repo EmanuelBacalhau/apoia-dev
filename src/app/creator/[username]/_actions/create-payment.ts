@@ -95,7 +95,7 @@ export async function createPayment(data: CreatePaymentSchema) {
     return {
       success: true,
       error: null,
-      session: JSON.stringify(session),
+      sessionId: session.id,
     };
   } catch (error) {
     return {
