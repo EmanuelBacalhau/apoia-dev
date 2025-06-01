@@ -1,7 +1,7 @@
 import { Users, DollarSign, Wallet } from "lucide-react";
 import { StatCard } from "./stats-card";
 import { getStatsCreator } from "../_data-access/get-stats-creator";
-import { formatCurrency } from "@/utils/format-currency";
+import { formatCurrency } from "@/utils/format";
 
 interface StatsProps {
   userId: string;

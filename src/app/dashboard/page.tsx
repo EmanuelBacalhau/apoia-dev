@@ -3,6 +3,7 @@ import { Stats } from "./_components/analytics";
 import { getOnboardAccount } from "./_data-access/get-onboard-account";
 import { auth } from "@/lib/auth";
 import { CreateAccountButton } from "./_components/create-account-button";
+import { getDonations } from "./_data-access/get-donations";
 
 export default async function Dashboard() {
   const session = await auth();
@@ -10,6 +11,8 @@ export default async function Dashboard() {
   const { url } = await getOnboardAccount(
     session?.user.connectedStripeAccountId ?? null
   );
+
+  const result = await getDonations(session?.user.id!);
 
   return (
     <div className="p-4">
@@ -35,7 +38,9 @@ export default async function Dashboard() {
       />
 
       <h2 className="text-2xl font-semibold mb-2">Últimas doações</h2>
-      {session?.user.connectedStripeAccountId && <DonationTable />}
+      {result.success && !result.error && (
+        <DonationTable donations={result.data!} />
+      )}
     </div>
   );
 }
