@@ -5,10 +5,18 @@ export function formatCurrency(amount: number): string {
   }).format(amount / 100);
 }
 
-export function formatDate(date: Date): string {
+export function formatDate(date: Date | string | null | undefined): string {
+  if (!date) return "-";
+
+  const dateObj = date instanceof Date ? date : new Date(date);
+
+  if (isNaN(dateObj.getTime())) {
+    return "-";
+  }
+
   return new Intl.DateTimeFormat("pt-BR", {
     year: "2-digit",
     month: "2-digit",
     day: "2-digit",
-  }).format(date);
+  }).format(dateObj);
 }

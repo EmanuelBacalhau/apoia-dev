@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Table,
@@ -9,19 +11,34 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency, formatDate } from "@/utils/format";
+import { useQuery } from "@tanstack/react-query";
+import { Donation } from "@/generated/prisma";
 
-interface DonationTableProps {
-  donations: {
-    id: string;
-    createdAt: Date;
-    amountInCents: number;
-    donorName: string;
-    donorMessage: string;
-    status: string;
-  }[];
+interface ResponseData {
+  data: Donation[];
 }
 
-export function DonationTable({ donations }: DonationTableProps) {
+export function DonationTable() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["donations"],
+    queryFn: async () => {
+      const url = `${process.env.NEXT_PUBLIC_HOST_URL}/api/donations`;
+      const response = await fetch(url);
+      const json = (await response.json()) as ResponseData;
+
+      return json.data;
+    },
+    refetchInterval: 10000,
+  });
+
+  if (isLoading) {
+    return (
+      <div>
+        <p className="text-center text-foreground-muted">Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Versão para desktop */}
@@ -44,48 +61,50 @@ export function DonationTable({ donations }: DonationTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {donations.map((donation) => (
-              <TableRow key={donation.id}>
-                <TableCell className="font-medium">
-                  {donation.donorName}
-                </TableCell>
-                <TableCell className="max-w-72">
-                  {donation.donorMessage}
-                </TableCell>
-                <TableCell className="text-center">
-                  {formatCurrency(donation.amountInCents)}
-                </TableCell>
-                <TableCell className="text-center">
-                  {formatDate(donation.createdAt)}
-                </TableCell>
-              </TableRow>
-            ))}
+            {data &&
+              data.map((donation) => (
+                <TableRow key={donation.id}>
+                  <TableCell className="font-medium">
+                    {donation.donorName}
+                  </TableCell>
+                  <TableCell className="max-w-72">
+                    {donation.donorMessage}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {formatCurrency(donation.amountInCents)}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {formatDate(donation.createdAt)}
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>
 
       {/* Versão para mobile */}
       <div className="lg:hidden space-y-4">
-        {donations.map((donation) => (
-          <Card key={donation.id}>
-            <CardHeader>
-              <CardTitle className="text-lg">{donation.donorName}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-2">
-                {donation.donorMessage}
-              </p>
-              <div className="flex justify-between items-center">
-                <span className="text-green-500 font-semibold">
-                  {formatCurrency(donation.amountInCents)}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {formatDate(donation.createdAt)}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {data &&
+          data.map((donation) => (
+            <Card key={donation.id}>
+              <CardHeader>
+                <CardTitle className="text-lg">{donation.donorName}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-2">
+                  {donation.donorMessage}
+                </p>
+                <div className="flex justify-between items-center">
+                  <span className="text-green-500 font-semibold">
+                    {formatCurrency(donation.amountInCents)}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {formatDate(donation.createdAt)}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
       </div>
     </>
   );
