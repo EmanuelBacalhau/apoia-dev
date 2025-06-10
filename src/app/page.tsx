@@ -213,7 +213,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
               {/* Starter Pricing */}
               <Card className="p-10 bg-gray-900 flex flex-col justify-between">
                 <CardHeader>
