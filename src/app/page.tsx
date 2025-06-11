@@ -43,24 +43,29 @@ export default function Home() {
           </div>
 
           <nav className="flex items-center space-x-6">
-            <Link
-              className="text-sm font-medium hover:underline underline-offset-4"
-              href="#features"
-            >
-              Recursos
-            </Link>
-            <Link
-              className="text-sm font-medium hover:underline underline-offset-4"
-              href="#pricing"
-            >
-              Planos
-            </Link>
-            <Link
-              className="text-sm font-medium hover:underline underline-offset-4"
-              href="/login"
+            <Button asChild variant="link">
+              <Link
+                className="text-sm font-medium hover:underline underline-offset-4 text-white"
+                href="#features"
+              >
+                Recursos
+              </Link>
+            </Button>
+            <Button asChild variant="link">
+              <Link
+                className="text-sm font-medium hover:underline underline-offset-4 text-white"
+                href="#pricing"
+              >
+                Planos
+              </Link>
+            </Button>
+            <Button
+              className="text-sm font-medium hover:underline underline-offset-4 text-white"
+              onClick={handleRegister}
+              variant="link"
             >
               Entrar
-            </Link>
+            </Button>
           </nav>
         </div>
       </header>
@@ -95,11 +100,13 @@ export default function Home() {
                 </p>
               </div>
 
-              <Button className="text-white" variant="outline" asChild>
-                <Link href="/login" className="flex items-center gap-2 mt-6">
-                  <span>Começar Gratuitamente</span>
-                  <ArrowRightIcon className="size-5" />
-                </Link>
+              <Button
+                className="text-white flex items-center gap-2 mt-6"
+                variant="outline"
+                onClick={handleRegister}
+              >
+                <span>Começar Gratuitamente</span>
+                <ArrowRightIcon className="size-5" />
               </Button>
             </div>
           </div>

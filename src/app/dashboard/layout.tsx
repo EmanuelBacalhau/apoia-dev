@@ -15,7 +15,7 @@ export default async function DashboardLayout({
   return (
     <>
       <Header />
-      <main className="w-full max-w-7xl mx-auto">{children}</main>
+      <main className="w-full container mx-auto p-4">{children}</main>
     </>
   );
 }

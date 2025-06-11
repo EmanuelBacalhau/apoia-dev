@@ -12,31 +12,40 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="flex h-16 items-center justify-between w-full px-4 max-w-7xl mx-auto">
-        <div className="flex items-center gap-2 font-semibold">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-1 text-amber-500"
-          >
-            <HandCoins className="h-6 w-6 mr-2" />
-            <span className="text-xl font-bold">ApoiaDev</span>
-          </Link>
+    <header className="border-b py-6 px-4 sticky top-0 z-50 bg-background/50 backdrop-blur">
+      <div className="container mx-auto flex items-center justify-between max-md:hidden">
+        <div className="flex items-center bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent font-bold text-xl">
+          <HandCoins className="h-6 w-6 mr-2 text-pink-600" />
+          <span>DonArt</span>
         </div>
 
-        <nav className="hidden md:flex items-center gap-6">
-          <Link
-            href="/dashboard"
-            className="text-sm font-medium transition-colors hover:text-primary"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/dashboard/me"
-            className="text-sm font-medium transition-colors hover:text-primary"
-          >
-            Meu perfil
-          </Link>
+        <nav className="flex items-center space-x-4">
+          <Button asChild variant="link">
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium transition-colors hover:text-white text-white"
+            >
+              Dashboard
+            </Link>
+          </Button>
+
+          <Button asChild variant="link">
+            <Link
+              href="/dashboard/content-studio"
+              className="text-sm font-medium transition-colors hover:text-white text-white"
+            >
+              Content Studio
+            </Link>
+          </Button>
+
+          <Button asChild variant="link">
+            <Link
+              href="/dashboard/me"
+              className="text-sm font-medium transition-colors hover:text-white text-white"
+            >
+              Meu perfil
+            </Link>
+          </Button>
 
           <Button
             variant="ghost"
@@ -48,9 +57,9 @@ export function Header() {
             <span className="sr-only">Sair</span>
           </Button>
         </nav>
-
-        <MobileMenu />
       </div>
+
+      <MobileMenu />
     </header>
   );
 }
