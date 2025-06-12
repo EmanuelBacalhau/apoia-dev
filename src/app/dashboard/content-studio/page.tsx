@@ -43,7 +43,7 @@ export default async function ContentStudio() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-4">
-        <Card className="bg-transparent">
+        <Card className="bg-transparent h-fit">
           <CardHeader>
             <div className="flex items-center gap-2">
               <CalendarIcon className="size-8 text-muted-foreground" />
@@ -165,7 +165,7 @@ export default async function ContentStudio() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card className="bg-transparent">
               <CardHeader>
-                <CardTitle className="text-lg">Dicas de Conteúdo</CardTitle>
+                <CardTitle className="text-lg">Conteúdo Gerado</CardTitle>
               </CardHeader>
 
               <CardContent>
@@ -178,7 +178,7 @@ export default async function ContentStudio() {
 
             <Card className="bg-transparent">
               <CardHeader>
-                <CardTitle className="text-lg">Dicas de Conteúdo</CardTitle>
+                <CardTitle className="text-lg">Sugestão Visual</CardTitle>
               </CardHeader>
 
               <CardContent>
@@ -189,6 +189,19 @@ export default async function ContentStudio() {
               </CardContent>
             </Card>
           </div>
+
+          <Card className="bg-transparent">
+            <CardHeader>
+              <CardTitle className="text-lg">Variações</CardTitle>
+            </CardHeader>
+
+            <CardContent>
+              <p className="text-muted-foreground">
+                Explore as melhores práticas para criar conteúdo envolvente e
+                eficaz.
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </main>
