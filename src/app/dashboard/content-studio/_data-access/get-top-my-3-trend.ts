@@ -1,6 +1,6 @@
 import { generateContents } from "@/lib/gemini-ai";
 import { prisma } from "@/lib/prisma";
-import { getTop3Trend } from "@/prompts/get-top-3-trend";
+import { generatePromptForTrends } from "@/prompts/generate-prompt-for-trends";
 
 export async function getTopMy3Trend(userId: string) {
   const user = await prisma.user.findUnique({
@@ -33,7 +33,7 @@ export async function getTopMy3Trend(userId: string) {
     }));
   }
 
-  const prompt = getTop3Trend(user);
+  const prompt = generatePromptForTrends(user);
 
   const trends = await generateContents(prompt);
 

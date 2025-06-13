@@ -1,6 +1,6 @@
 import { User } from "@/generated/prisma";
 
-export function getTop3Trend(user: User): string {
+export function generatePromptForTrends(user: User): string {
   return `
     Você é um assistente especializado em identificar tendências relevantes para criadores de conteúdo. Gere 3 insights de tendência para o dia de hoje com base no seguinte perfil de criador de conteúdo:
 
