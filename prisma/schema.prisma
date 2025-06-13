@@ -24,13 +24,34 @@ model User {
   bio                      String?
   connectedStripeAccountId String?
 
+  mainTopic      String?
+  targetAudience String?
+  contentStyle   String?
+  interests      String?
+
   accounts Account[]
   sessions Session[]
 
   donations Donation[] @relation("UserDonations")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  trendInsights TrendInsight[]
+}
+
+model TrendInsight {
+  id           String   @id @default(cuid())
+  title        String
+  searchGrowth String
+  competition  String
+  trendLabel   String
+  platforms    String
+  badgeColor   String
+  borderColor  String
+  createdAt    DateTime @default(now())
+
+  userId String?
+  User   User?   @relation(fields: [userId], references: [id])
 }
 
 model Donation {

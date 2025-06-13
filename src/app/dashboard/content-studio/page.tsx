@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -5,16 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  CalendarIcon,
-  FileTextIcon,
-  InstagramIcon,
-  Lightbulb,
-  LinkedinIcon,
-  SparklesIcon,
-  TwitterIcon,
-} from "lucide-react";
-import { Suggestion } from "./_components/suggestion";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -24,9 +15,31 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
+import {
+  IconBrandInstagram,
+  IconBrandLinkedin,
+  IconBrandTiktok,
+  IconBrandYoutube,
+} from "@tabler/icons-react";
+import {
+  CalendarIcon,
+  FileTextIcon,
+  Lightbulb,
+  SparklesIcon,
+} from "lucide-react";
+import { Suggestion } from "./_components/suggestion";
+import { getTopMy3Trend } from "./_data-access/get-top-my-3-trend";
 
 export default async function ContentStudio() {
+  const session = await auth();
+
+  if (!session?.user) {
+    return null;
+  }
+
+  const cards = await getTopMy3Trend(session.user.id);
+
   return (
     <main className="w-full h-full space-y-8">
       <div className="flex items-center gap-4">
@@ -55,9 +68,18 @@ export default async function ContentStudio() {
           </CardHeader>
 
           <CardContent className="space-y-4">
-            <Suggestion />
-            <Suggestion />
-            <Suggestion />
+            {cards?.map((card, index) => (
+              <Suggestion
+                key={index}
+                title={card.title}
+                searchGrowth={card.searchGrowth}
+                competition={card.competition}
+                platforms={card.platforms}
+                badgeColor={card.badgeColor}
+                borderColor={card.borderColor}
+                trendLabel={card.trendLabel}
+              />
+            ))}
           </CardContent>
         </Card>
 
@@ -88,18 +110,23 @@ export default async function ContentStudio() {
 
                     <SelectContent>
                       <SelectItem value="linkedin">
-                        <LinkedinIcon className="size-5 text-white" />
+                        <IconBrandLinkedin className="size-5 text-white" />
                         LinkedIn
                       </SelectItem>
 
                       <SelectItem value="instagram">
-                        <InstagramIcon className="size-5 text-white" />
+                        <IconBrandInstagram className="size-5 text-white" />
                         Instagram
                       </SelectItem>
 
                       <SelectItem value="twitter">
-                        <TwitterIcon className="size-5 text-white" />
-                        Twitter
+                        <IconBrandTiktok className="size-5 text-white" />
+                        TikTok
+                      </SelectItem>
+
+                      <SelectItem value="youtube">
+                        <IconBrandYoutube className="size-5 text-white" />
+                        YouTube
                       </SelectItem>
                     </SelectContent>
                   </Select>
