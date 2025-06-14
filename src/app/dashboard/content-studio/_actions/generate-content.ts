@@ -32,7 +32,5 @@ export async function generateContent(
 
   const content = await generateContents(prompt);
 
-  console.log("Generated content:", content);
-
   return content as CompleteContentPost;
 }
