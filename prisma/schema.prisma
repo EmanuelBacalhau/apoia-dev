@@ -49,6 +49,9 @@ model TrendInsight {
   badgeColor   String
   borderColor  String
   createdAt    DateTime @default(now())
+  tom          String
+  contentType  String
+  keys         String
 
   userId String?
   User   User?   @relation(fields: [userId], references: [id])

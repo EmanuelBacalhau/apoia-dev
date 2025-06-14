@@ -30,6 +30,9 @@ export async function getTopMy3Trend(userId: string) {
       badgeColor: card.badgeColor,
       borderColor: card.borderColor,
       trendLabel: card.trendLabel,
+      tom: card.tom,
+      contentType: card.contentType,
+      keys: card.keys.split(","),
     }));
   }
 
@@ -51,6 +54,9 @@ export async function getTopMy3Trend(userId: string) {
       borderColor: trend.borderColor,
       trendLabel: trend.trendLabel,
       userId: user.id,
+      tom: trend.tom,
+      contentType: trend.contentType,
+      keys: trend.keys.join(","),
     })),
   });
 
@@ -62,5 +68,8 @@ export async function getTopMy3Trend(userId: string) {
     badgeColor: trend.badgeColor,
     borderColor: trend.borderColor,
     trendLabel: trend.trendLabel,
+    tom: trend.tom,
+    contentType: trend.contentType,
+    keys: trend.keys.join(", "),
   }));
 }

@@ -48,9 +48,15 @@ import {
   CompleteContentPost,
   generateContent,
 } from "../_actions/generate-content";
+import {
+  ContentType,
+  Platform,
+  Tom,
+  useCustomForm,
+} from "../_contexts/custom-form";
 
 const formSchema = z.object({
-  platform: z.enum(["linkedin", "instagram", "twitter", "youtube"], {
+  platform: z.enum(["linkedin", "instagram", "tiktok", "youtube"], {
     required_error: "A plataforma é obrigatória",
     invalid_type_error: "Selecione uma plataforma válida",
   }),
@@ -78,12 +84,14 @@ const transformSchema = formSchema.transform((values) => ({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function FormContent() {
+  const { formData } = useCustomForm();
   const [result, setResult] = useState<CompleteContentPost | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (isLoading) {
       document.body.classList.add("no-scroll");
+      scrollTo({ top: 0, behavior: "smooth" });
     } else {
       document.body.classList.remove("no-scroll");
     }
@@ -96,12 +104,21 @@ export default function FormContent() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      platform: "linkedin",
-      contentType: "post",
-      tom: "education",
+      platform: Platform.Instagram,
+      contentType: ContentType.Post,
+      tom: Tom.Education,
       keys: "",
     },
   });
+
+  useEffect(() => {
+    form.reset({
+      platform: formData.platform,
+      contentType: formData.contentType,
+      tom: formData.tom,
+      keys: formData.keys,
+    });
+  }, [formData]);
 
   async function onSubmit(values: FormValues) {
     setResult(null);
@@ -147,7 +164,7 @@ export default function FormContent() {
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                         >
                           <SelectTrigger className="w-full">
                             <SelectValue />
@@ -164,7 +181,7 @@ export default function FormContent() {
                               Instagram
                             </SelectItem>
 
-                            <SelectItem value="twitter">
+                            <SelectItem value="tiktok">
                               <IconBrandTiktok className="size-5 text-white" />
                               TikTok
                             </SelectItem>
@@ -192,7 +209,7 @@ export default function FormContent() {
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                         >
                           <SelectTrigger className="w-full">
                             <SelectValue />
@@ -242,7 +259,7 @@ export default function FormContent() {
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                         >
                           <SelectTrigger className="w-full">
                             <SelectValue />
@@ -285,7 +302,8 @@ export default function FormContent() {
 
                     <FormControl>
                       <Textarea
-                        {...field}
+                        value={field.value}
+                        onChange={(e) => field.onChange(e.target.value)}
                         placeholder="Digite os tópicos ou palavras-chave aqui..."
                         className="max-h-36 min-h-36 resize-none"
                       />
@@ -414,14 +432,12 @@ export default function FormContent() {
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1 bg-green-600/15 rounded-sm text-center p-2">
                     <p className="text-md">{result.engagementRate}</p>
-                    <p className="text-white text-sm">Taxa de Engajamento:</p>
+                    <p className="text-white text-sm">Taxa de Engajamento</p>
                   </div>
 
                   <div className="space-y-1 bg-blue-600/15 rounded-sm text-center p-2">
                     <p className="text-md">{result.trendingScore}</p>
-                    <p className="text-white text-sm">
-                      Pontuação de Tendência:
-                    </p>
+                    <p className="text-white text-sm">Pontuação de Tendência</p>
                   </div>
                 </div>
               </CardContent>
@@ -502,14 +518,14 @@ export default function FormContent() {
             <CardContent>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <p className="font-bold">Versão Curta</p>
+                  <p className="font-bold">Versão Curta:</p>
                   <p className="text-md bg-muted/50 rounded-sm p-2">
                     {result.variations.short}
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <p className="font-bold">Pergunta para Engajamento</p>
+                  <p className="font-bold">Pergunta para Engajamento:</p>
                   <p className="text-md bg-muted/50 rounded-sm p-2">
                     {result.variations.question}
                   </p>
@@ -528,11 +544,11 @@ export default function FormContent() {
               style={{ animationDelay: "0s" }}
             ></div>
             <div
-              className="size-3 bg-purple-600 rounded-full animate-bounce duration-200"
+              className="size-3 bg-purple-600 rounded-full animate-bounce"
               style={{ animationDelay: "0.2s" }}
             ></div>
             <div
-              className="size-3 bg-purple-600 rounded-full animate-bounce duration-400"
+              className="size-3 bg-purple-600 rounded-full animate-bounce"
               style={{ animationDelay: "0.4s" }}
             ></div>
           </div>

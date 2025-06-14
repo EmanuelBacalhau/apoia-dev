@@ -21,7 +21,10 @@ export function generatePromptForTrends(user: User): string {
         "platforms": ["linkedin", "instagram"], // opções: linkedin, instagram, tiktok, youtube
         "badgeColor": "bg-green-500/60", // Classes de cor do Tailwind: bg-green-500/60 para alta, bg-yellow-500/60 para média, bg-red-500/60 para baixa
         "borderColor": "border-green-600", // Classes de cor do Tailwind: border-green-600 para alta, border-yellow-600 para média, border-red-600 para baixa
-        "trendLabel": "Em alta"
+        "trendLabel": "Em alta",
+        "tom": "education", // ou professional, casual, inspirational, humorous
+        "contentType": "post", //  ou article, video, shorts, reel
+        "keys": [], // palavras-chave relacionadas à tendência, se aplicável, separadas por vírgula, sempre referente title
       }
     ]
 `;

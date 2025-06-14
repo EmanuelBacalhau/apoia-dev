@@ -11,6 +11,7 @@ import {
   IconBrandTiktok,
   IconBrandYoutube,
 } from "@tabler/icons-react";
+import { useCustomForm } from "../_contexts/custom-form";
 
 interface SuggestionProps {
   title: string;
@@ -20,9 +21,23 @@ interface SuggestionProps {
   badgeColor: string;
   borderColor: string;
   trendLabel: string;
+  tom: string;
+  contentType: string;
+  keys: string;
 }
 
 export function Suggestion(props: SuggestionProps) {
+  const { setFormData } = useCustomForm();
+
+  const handleUseIdea = () => {
+    setFormData({
+      platform: props.platforms.split(",")[0] as any,
+      contentType: props.contentType as any,
+      tom: props.tom as any,
+      keys: props.keys,
+    });
+  };
+
   return (
     <Card className="bg-transparent gap-3">
       <CardHeader className="flex flex-col gap-4">
@@ -49,21 +64,43 @@ export function Suggestion(props: SuggestionProps) {
         </span>
 
         <div className="flex items-center gap-1">
-          {props.platforms.includes("linkedin") && (
-            <IconBrandLinkedin className="size-5 text-muted-foreground mt-2" />
-          )}
-          {props.platforms.includes("instagram") && (
-            <IconBrandInstagram className="size-5 text-muted-foreground mt-2 ml-2" />
-          )}
-          {props.platforms.includes("tiktok") && (
-            <IconBrandTiktok className="size-5 text-muted-foreground mt-2 ml-2" />
-          )}
-          {props.platforms.includes("youtube") && (
-            <IconBrandYoutube className="size-5 text-muted-foreground mt-2 ml-2" />
-          )}
+          {props.platforms.split(",").map((platform) => {
+            if (platform === "linkedin")
+              return (
+                <IconBrandLinkedin
+                  className="size-5 text-muted-foreground mt-2"
+                  key={platform}
+                />
+              );
+            if (platform === "instagram")
+              return (
+                <IconBrandInstagram
+                  className="size-5 text-muted-foreground mt-2 ml-2"
+                  key={platform}
+                />
+              );
+            if (platform === "tiktok")
+              return (
+                <IconBrandTiktok
+                  className="size-5 text-muted-foreground mt-2 ml-2"
+                  key={platform}
+                />
+              );
+            if (platform === "youtube")
+              return (
+                <IconBrandYoutube
+                  className="size-5 text-muted-foreground mt-2 ml-2"
+                  key={platform}
+                />
+              );
+          })}
         </div>
 
-        <Button variant="outline" className="mt-4 w-full">
+        <Button
+          onClick={handleUseIdea}
+          variant="outline"
+          className="mt-4 w-full"
+        >
           <ZapIcon className="size-4 mr-2" />
           Usar ideia
         </Button>
