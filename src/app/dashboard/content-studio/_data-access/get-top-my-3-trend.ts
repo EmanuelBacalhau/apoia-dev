@@ -26,7 +26,7 @@ export async function getTopMy3Trend(userId: string) {
       title: card.title,
       searchGrowth: card.searchGrowth,
       competition: card.competition,
-      platforms: card.platforms,
+      platforms: card.platforms.split(","),
       badgeColor: card.badgeColor,
       borderColor: card.borderColor,
       trendLabel: card.trendLabel,

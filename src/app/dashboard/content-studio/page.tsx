@@ -60,7 +60,7 @@ export default async function ContentStudio() {
                   trendLabel={card.trendLabel}
                   tom={card.tom}
                   contentType={card.contentType}
-                  keys={card.keys.join(", ")}
+                  keys={card.keys}
                 />
               ))}
             </CardContent>

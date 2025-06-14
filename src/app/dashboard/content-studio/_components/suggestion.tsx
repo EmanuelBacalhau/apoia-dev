@@ -17,7 +17,7 @@ interface SuggestionProps {
   title: string;
   searchGrowth: number;
   competition: number;
-  platforms: string;
+  platforms: string[];
   badgeColor: string;
   borderColor: string;
   trendLabel: string;
@@ -31,7 +31,7 @@ export function Suggestion(props: SuggestionProps) {
 
   const handleUseIdea = () => {
     setFormData({
-      platform: props.platforms.split(",")[0] as any,
+      platform: props.platforms[0] as any,
       contentType: props.contentType as any,
       tom: props.tom as any,
       keys: props.keys,
@@ -64,7 +64,7 @@ export function Suggestion(props: SuggestionProps) {
         </span>
 
         <div className="flex items-center gap-1">
-          {props.platforms.split(",").map((platform) => {
+          {props.platforms.map((platform) => {
             if (platform === "linkedin")
               return (
                 <IconBrandLinkedin
