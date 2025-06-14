@@ -63,9 +63,7 @@ export default async function ContentStudio() {
               <CalendarIcon className="size-8 text-muted-foreground" />
               <CardTitle className="text-xl">Ideias de hoje</CardTitle>
             </div>
-            <CardDescription>
-              Sugestões personalizadas do Gemini AI
-            </CardDescription>
+            <CardDescription>Sugestões personalizadas</CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4">

@@ -1,5 +1,7 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,46 +10,114 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { FileTextIcon, LightbulbIcon, SparklesIcon } from "lucide-react";
-import {
-  IconBrandInstagram,
-  IconBrandLinkedin,
-  IconBrandTiktok,
-  IconBrandYoutube,
-} from "@tabler/icons-react";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import {
-  CompleteContentPost,
-  generateContent,
-} from "../_actions/generate-content";
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  IconAlertHexagon,
+  IconBrandInstagram,
+  IconBrandLinkedin,
+  IconBrandTiktok,
+  IconBrandYoutube,
+  IconVideo,
+} from "@tabler/icons-react";
+import { FileTextIcon, LightbulbIcon, SparklesIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  CompleteContentPost,
+  generateContent,
+} from "../_actions/generate-content";
+
+const formSchema = z.object({
+  platform: z.enum(["linkedin", "instagram", "twitter", "youtube"], {
+    required_error: "A plataforma é obrigatória",
+    invalid_type_error: "Selecione uma plataforma válida",
+  }),
+  contentType: z.enum(["post", "article", "video", "shorts", "reel"], {
+    required_error: "O tipo de conteúdo é obrigatório",
+    invalid_type_error: "Selecione um tipo de conteúdo válido",
+  }),
+  tom: z.enum(
+    ["education", "professional", "casual", "inspirational", "humorous"],
+    {
+      required_error: "O tom é obrigatório",
+      invalid_type_error: "Selecione um tom válido",
+    }
+  ),
+  keys: z.string(),
+});
+
+const transformSchema = formSchema.transform((values) => ({
+  platform: values.platform,
+  contentType: values.contentType,
+  tom: values.tom,
+  keys: values.keys.split(",").map((key) => key.trim()),
+}));
+
+type FormValues = z.infer<typeof formSchema>;
 
 export default function FormContent() {
   const [result, setResult] = useState<CompleteContentPost | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleGenerateContent = async () => {
-    const content = await generateContent({
-      platform: "youtube",
-      contentType: "shorts",
+  useEffect(() => {
+    if (isLoading) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+
+    return () => {
+      document.body.classList.remove("no-scroll");
+    };
+  }, [isLoading]);
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      platform: "linkedin",
+      contentType: "post",
       tom: "education",
-      keys: ["tecnologia", "inovação", "futuro"],
+      keys: "",
+    },
+  });
+
+  async function onSubmit(values: FormValues) {
+    setResult(null);
+    const schema = transformSchema.parse(values);
+
+    setIsLoading(true);
+    const content = await generateContent({
+      platform: schema.platform,
+      contentType: schema.contentType,
+      tom: schema.tom,
+      keys: schema.keys,
     });
+
     setResult(content);
-  };
+    setIsLoading(false);
+  }
 
   return (
     <div className="space-y-4">
@@ -64,111 +134,177 @@ export default function FormContent() {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label>Plataforma</Label>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="platform"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Plataforma</FormLabel>
 
-              <Select defaultValue="linkedin">
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue />
+                          </SelectTrigger>
 
-                <SelectContent>
-                  <SelectItem value="linkedin">
-                    <IconBrandLinkedin className="size-5 text-white" />
-                    LinkedIn
-                  </SelectItem>
+                          <SelectContent>
+                            <SelectItem value="linkedin">
+                              <IconBrandLinkedin className="size-5 text-white" />
+                              LinkedIn
+                            </SelectItem>
 
-                  <SelectItem value="instagram">
-                    <IconBrandInstagram className="size-5 text-white" />
-                    Instagram
-                  </SelectItem>
+                            <SelectItem value="instagram">
+                              <IconBrandInstagram className="size-5 text-white" />
+                              Instagram
+                            </SelectItem>
 
-                  <SelectItem value="twitter">
-                    <IconBrandTiktok className="size-5 text-white" />
-                    TikTok
-                  </SelectItem>
+                            <SelectItem value="twitter">
+                              <IconBrandTiktok className="size-5 text-white" />
+                              TikTok
+                            </SelectItem>
 
-                  <SelectItem value="youtube">
-                    <IconBrandYoutube className="size-5 text-white" />
-                    YouTube
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                            <SelectItem value="youtube">
+                              <IconBrandYoutube className="size-5 text-white" />
+                              YouTube
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
 
-            <div className="space-y-2">
-              <Label>Tipo de Conteúdo</Label>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <Select defaultValue="post">
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
+                <FormField
+                  control={form.control}
+                  name="contentType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tipo de Conteúdo</FormLabel>
 
-                <SelectContent>
-                  <SelectItem value="post">
-                    <FileTextIcon className="size-5 text-white" />
-                    Post
-                  </SelectItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue />
+                          </SelectTrigger>
 
-                  <SelectItem value="article">
-                    <FileTextIcon className="size-5 text-white" />
-                    Artigo
-                  </SelectItem>
+                          <SelectContent>
+                            <SelectItem value="post">
+                              <FileTextIcon className="size-5 text-white" />
+                              Post
+                            </SelectItem>
 
-                  <SelectItem value="video">
-                    <FileTextIcon className="size-5 text-white" />
-                    Video
-                  </SelectItem>
+                            <SelectItem value="article">
+                              <FileTextIcon className="size-5 text-white" />
+                              Artigo
+                            </SelectItem>
 
-                  <SelectItem value="shorts">
-                    <FileTextIcon className="size-5 text-white" />
-                    Shorts
-                  </SelectItem>
+                            <SelectItem value="video">
+                              <IconVideo className="size-5 text-white" />
+                              Video
+                            </SelectItem>
 
-                  <SelectItem value="reel">
-                    <FileTextIcon className="size-5 text-white" />
-                    Reel
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                            <SelectItem value="shorts">
+                              <IconVideo className="size-5 text-white" />
+                              Shorts
+                            </SelectItem>
 
-            <div className="space-y-2">
-              <Label>Tom</Label>
+                            <SelectItem value="reel">
+                              <IconVideo className="size-5 text-white" />
+                              Reel
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
 
-              <Select defaultValue="education">
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                <SelectContent>
-                  <SelectItem value="education">Educativo</SelectItem>
-                  <SelectItem value="professional">Profissional</SelectItem>
-                  <SelectItem value="casual">Casual</SelectItem>
-                  <SelectItem value="inspirational">Inspirador</SelectItem>
-                  <SelectItem value="humorous">Engraçado</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+                <FormField
+                  control={form.control}
+                  name="tom"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tom</FormLabel>
 
-          <div className="space-y-2">
-            <Label>Tópico ou Palavra-chave</Label>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue />
+                          </SelectTrigger>
 
-            <Textarea
-              placeholder="Digite aqui..."
-              className="max-h-36 min-h-36 resize-none"
-            />
-          </div>
+                          <SelectContent>
+                            <SelectItem value="education">Educativo</SelectItem>
+                            <SelectItem value="professional">
+                              Profissional
+                            </SelectItem>
+                            <SelectItem value="casual">Casual</SelectItem>
+                            <SelectItem value="inspirational">
+                              Inspirador
+                            </SelectItem>
+                            <SelectItem value="humorous">Engraçado</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
 
-          <Button
-            onClick={handleGenerateContent}
-            className="w-full transition-colors duration-300 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-600 hover:to-pink-700"
-          >
-            <SparklesIcon className="size-4 mr-2" />
-            Gerar Conteúdo
-          </Button>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="keys"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tópico ou Palavra-chave</FormLabel>
+
+                    <FormDescription className="flex items-center gap-2">
+                      <IconAlertHexagon className="size-4 text-yellow-500" />
+                      <span>
+                        Digite os tópicos ou palavras-chave separados por
+                        vírgula. Exemplo: tecnologia, inovação, futuro
+                      </span>
+                    </FormDescription>
+
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Digite os tópicos ou palavras-chave aqui..."
+                        className="max-h-36 min-h-36 resize-none"
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                className="cursor-pointer w-full transition-colors duration-300 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-600 hover:to-pink-700"
+              >
+                <SparklesIcon className="size-4 mr-2" />
+                Gerar Conteúdo
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
 
@@ -366,14 +502,14 @@ export default function FormContent() {
             <CardContent>
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <p className="font-bold">Versão Curta:</p>
+                  <p className="font-bold">Versão Curta</p>
                   <p className="text-md bg-muted/50 rounded-sm p-2">
                     {result.variations.short}
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <p className="font-bold">Pergunta para Engajamento:</p>
+                  <p className="font-bold">Pergunta para Engajamento</p>
                   <p className="text-md bg-muted/50 rounded-sm p-2">
                     {result.variations.question}
                   </p>
@@ -382,6 +518,25 @@ export default function FormContent() {
             </CardContent>
           </Card>
         </>
+      )}
+
+      {isLoading && (
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 h-full">
+          <div className="flex items-center space-x-2">
+            <div
+              className="size-3 bg-purple-600 rounded-full animate-bounce"
+              style={{ animationDelay: "0s" }}
+            ></div>
+            <div
+              className="size-3 bg-purple-600 rounded-full animate-bounce duration-200"
+              style={{ animationDelay: "0.2s" }}
+            ></div>
+            <div
+              className="size-3 bg-purple-600 rounded-full animate-bounce duration-400"
+              style={{ animationDelay: "0.4s" }}
+            ></div>
+          </div>
+        </div>
       )}
     </div>
   );
