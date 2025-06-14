@@ -32,7 +32,7 @@ export async function getTopMy3Trend(userId: string) {
       trendLabel: card.trendLabel,
       tom: card.tom,
       contentType: card.contentType,
-      keys: card.keys.split(","),
+      keys: card.keys,
     }));
   }
 
@@ -56,7 +56,7 @@ export async function getTopMy3Trend(userId: string) {
       userId: user.id,
       tom: trend.tom,
       contentType: trend.contentType,
-      keys: trend.keys.join(","),
+      keys: trend.keys.join(", "),
     })),
   });
 
